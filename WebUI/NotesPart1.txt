@@ -1,0 +1,72 @@
+﻿
+1. AppUser class oluşturuldu ve IdentityUser'den miras alındı
+	public class AppUser : IdentityUser { }
+
+2. AppRole class oluşturuldu ve IdentityRole'den miras alındı
+	public class AppRole : IdentityRole { }
+
+3. AppIdentityDbContext oluşturuldu : 
+	public class AppIdentityDbContext : IdentityDbContext<AppUser, AppRole, string>
+    {
+        public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options)
+        {
+        }
+    }
+    *** Note : *** Database içerisinde AppUser ve AppRole tablolarının Id colonları string olduğu için
+                   yukarıda generic içerisinde string yazılır.
+
+4. Program.cs içerisine Daatabase Service eklendi : 
+    builder.Services.AddDbContext<AppIdentityDbContext>(options => options.UseSqlServer(
+    builder.Configuration.GetConnectionString("AppDbConnection")));
+
+5. Program.cs içerisine Identity Service eklendi : 
+    builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AppIdentityDbContext>();
+
+6. Admin Controller, Admin Index View ve Admin Layout eklendi
+7. Admin Controller constructor içerisine UserManager inject edildi. 
+8. UserRegisterViewModel class eklendi. Attribute ler tanımlandı.
+9. Views => Home içerisine SignUp.cshtml ve Login.cshtml eklendi.
+ 
+10. Business Katmanı oluşturulup içine CustomPasswordValidator sınıfı eklendi. 
+        public class CustomPasswordValidator : IPasswordValidator<AppUser> { }
+
+11. Business Katmanı içine CustomUserValidor eklendi. 
+         public class CustomUserValidator : IUserValidator<AppUser> { } 
+
+12. Business Katmanı içine Identity API tarafından default gelen hata mesajlarını override etmek için Identity Error Describer sınıfı oluşturuldu.
+        public class CustomIdentityErrorDescriber : IdentityErrorDescriber { }
+    *** Default olarak gelen hata mesajlarını miras alınan sınıf sayesinde override edebiliyoruz. Epey bir method var. 
+
+13. Program.cs içerisindeki AddIdentity Servisi içine Password, User Validator ve Error Describer ayarı eklendi:
+        builder.Services.AddIdentity<AppUser, AppRole>(options =>
+        {
+            options.User.RequireUniqueEmail = true;
+            options.User.AllowedUserNameCharacters = "abcçdefgğhıijklmnoöpqrsştuüvwxyzABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ0123456789-._";
+            options.Password.RequiredLength = 4;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireUppercase = false;
+            options.Password.RequireDigit = false;
+        }).AddPasswordValidator<CustomPasswordValidator>().AddEntityFrameworkStores<AppIdentityDbContext>();
+
+14. Program.cs içerisine Cookiebuilder ekleyip, cookie ayarları yapıldı ve Cookie Servisi eklendi : 
+    ***** service içindeki options kısmındaki ayarlara detaylı bakılmalı. Aşağıdakilerden fazla ayar mevcut. 
+        CookieBuilder cookieBuilder = new()
+        {
+            Name = "MyOwnCookie",
+            HttpOnly = false,
+            Expiration = TimeSpan.FromDays(60),
+            SameSite = SameSiteMode.Strict,
+            SecurePolicy = CookieSecurePolicy.SameAsRequest,
+        };
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            options.LoginPath = new PathString("/Home/Login");
+            options.LogoutPath = new PathString("/Home/Logout");
+            options.Cookie = cookieBuilder;
+            options.SlidingExpiration = true;
+        });
+
+15. Home Controller => Login HttpPost Action Methodu implement edildi. 
+    ReturnUrl ayarı yapıldı. Belli sayıda başarısız girişten sonra kullanıcı hesabını kilitleme ayarı yapıldı.
+
