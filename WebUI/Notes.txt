@@ -70,3 +70,46 @@
 15. Home Controller => Login HttpPost Action Methodu implement edildi. 
     ReturnUrl ayarı yapıldı. Belli sayıda başarısız girişten sonra kullanıcı hesabını kilitleme ayarı yapıldı.
 
+
+======================================================== PART 1 ENDS ===================================================================
+*** Bu bölümde kullanıcı şifresini unuttuysa, kullanıcıya password reset için mail atacaz ve reset işlemlerini gerçekleştireceğiz. 
+
+1. Home Controller içerisine ResetPassword ve ResetPasswordConfirm action methodları eklendi ve Viewler oluşturuldu. 
+    Action methodlar implement edildi. Ayrıca PasswordResetViewModel oluşturuldu
+
+2. Business içine Utilities klasörü oluşturulup içerisine PasswordReset sınıfı eklendi. 
+    Bu sınıfta Password reset için email gönderme işlemleri yapılacak. 
+ 
+ ======================================================== PART 2 ENDS ===================================================================
+
+ 1. Member Contoller => Index action implement edildi.
+
+ 2. Views/Member => _MemberLayout eklendi ve implement edildi. Burası login olduktan sonra açılan sayfa olacak. Ama Bunun action methodu olmayacak
+    Member => Index.cshmtl içerisine ekleyerek açılmasını sağlayacaz : Layout = "~/Views/Member/_MemberLayout.cshtml";
+
+ 3. Mapper olarak AutoMapper yerine "Mapster" kullanıldı ve WebUI projesine nugget olarak eklendi. (Member / Index action içinde implement edildi.,
+
+ 4. SecurityStamp mantığı Member / PasswordChange içerisinde implement edildi. 
+
+ 5. USerEdit Get ve Post Actionları ve View Oluşturulup implement edildi.
+
+ 6. Logout methdou implement edildi fakat geriye IActionResult dönmedi. Program.cs içinde  options.LogoutPath = new PathString("/Member/Logout");
+    olarak belirtildi. Fakat bu logout için yeterli değil. Bir de _MemberLayout içinde şu alanın içerisine route ekledik : 
+     <a class="btn btn-info col-12" style="margin-top: 5px" asp-action="Logout" asp-controller="Member" asp-route-returnUrl="/Home/Index">Logout</a>
+
+     ***** Bunlar yerine elbette sadece bir tane IActionResult dönen Logout Action methodu yazılabilirdi : Hangisini tercih edersek artık.
+     public async Task<IActionResult> Logout()
+     {
+         await SignInManager.SignOutAsync();
+     
+         return RedirectToAction("Index", "Home");
+     }
+
+7. AppUser sınıfına City property ekledik. Daha sonra tekrar migration yaptık. Database Update ile City property'si AspNetUsers tablosuna eklendi
+   Daha sonra bu işlemi geri almak için şunları gerçekleştirdik : 
+   Package Manager Console => Update-Database "20221017211222_Mig_1"  (Update database' den sonra quote içine gitmek istenilen migration yazılıyor.)
+   Son olarak da remove migration komutu ile son eklenmiş olan migration silinir.
+
+8. Daha sonra mig2 ile city ve sonra mig3 ile birhday, gender ve picture alanları eklendi migrate edilip update database yapıldı.
+
+9. Base Contoller oluşturulup code içinde repeat edilen bazı bölümler base'e alındı. DRY uygulandı.

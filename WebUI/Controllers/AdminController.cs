@@ -6,13 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebUI.Controllers
 {
     [Authorize]
-    public class AdminController : Controller
-    {
-        private UserManager<AppUser> UserManager { get; }
+    public class AdminController : BaseController
+    { 
 
-        public AdminController(UserManager<AppUser> userManager)
-        {
-            UserManager = userManager;
+        public AdminController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager) 
+            : base(userManager, signInManager)
+        { 
         }
 
         public IActionResult Index()

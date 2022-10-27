@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DataAccess.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Models.ViewModels
 {
-    public class RegisterViewModel
+    public class UserViewModel
     {
         [Required(ErrorMessage = "Username is required")]
-        public string Username { get; set; }
+        public string UserName { get; set; }
 
 
         [Required(ErrorMessage = "Password is required")]
@@ -21,6 +22,14 @@ namespace DataAccess.Models.ViewModels
         [Required(ErrorMessage = "Email Adress is required")]
         [Display(Name = "Email Address")]
         [EmailAddress(ErrorMessage = "Email Address is not valid")]
-        public string EmailAddress { get; set; }
+        public string Email { get; set; }
+
+        public string? City { get; set; }
+        public string? Picture { get; set; }
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Birthday")]
+        public DateTime? BirthDay { get ; set; }
+        public Gender? Gender { get; set; }
     }
 }

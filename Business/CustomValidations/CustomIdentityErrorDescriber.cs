@@ -6,7 +6,7 @@ namespace Business.CustomValidation
     {
         public override IdentityError InvalidUserName(string userName)
         {
-            return new IdentityError()
+            return new IdentityError
             {
                 Code = "InvalidUserName",
                 Description = $"Bu {userName} geçersizdir."
@@ -15,7 +15,7 @@ namespace Business.CustomValidation
 
         public override IdentityError DuplicateEmail(string email)
         {
-            return new IdentityError()
+            return new IdentityError
             {
                 Code = "DuplicateEmail",
                 Description = $"{email} sistemde zaten kayıtlıdır."
@@ -24,7 +24,7 @@ namespace Business.CustomValidation
 
         public override IdentityError PasswordTooShort(int length)
         {
-            return new IdentityError()
+            return new IdentityError
             {
                 Code = "PasswordTooShort",
                 Description = $"Şifreniz en az {length} karakterli olmalıdır."
@@ -33,7 +33,7 @@ namespace Business.CustomValidation
 
         public override IdentityError DuplicateUserName(string userName)
         {
-            return new IdentityError()
+            return new IdentityError
             {
                 Code = "UsernameAlreadyTaken",
                 Description = $"{userName} sistemde zaten kayıtlıdır."
