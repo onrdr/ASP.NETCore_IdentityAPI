@@ -113,3 +113,7 @@
 8. Daha sonra mig2 ile city ve sonra mig3 ile birhday, gender ve picture alanları eklendi migrate edilip update database yapıldı.
 
 9. Base Contoller oluşturulup code içinde repeat edilen bazı bölümler base'e alındı. DRY uygulandı.
+
+ ======================================================== PART 3 ENDS ===================================================================
+
+ 1. Admin Layout sayfası AdminView'e eklendi. AdminController implement edildi. 

@@ -1,8 +1,42 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
-}
-
-<div class="text-center">
+} 
+<div class="row text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>You can check the project codes in <a href="https://github.com/onrdr/ASP.NetCore_MVC_SchoolProject">github</a></p>
 </div>
+
+<hr />  
+<div class="col-8" style="margin-left:auto; margin-right:auto">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr class="bg-light">
+                <th>Role</th>
+                <th>Username</th>
+                <th>Email Address</th>
+                <th>Password</th>
+            </tr>
+        </thead>
+        <tr class="bg-info">
+            <td>Admin</td>
+            <td>admin</td>
+            <td>admin@gmail.com</td>
+            <td><a asp-controller="Home" asp-action="Contact">Contact</a></td>
+        </tr>
+        <tr class="bg-warning">
+            <td>Teacher</td>
+            <td>teacher</td>
+            <td>teacher@gmail.com</td>
+            <td>tt01</td>
+        </tr>
+        <tr class="bg-success">
+            <td>Student</td>
+            <td>student</td>
+            <td>student@gmail.com</td>
+            <td>ss01</td>
+        </tr> 
+    </table>
+</div>
+
+<p class="text-center"><i>You can use information above to login and check the interior structure of the website</i></p>
+<hr />

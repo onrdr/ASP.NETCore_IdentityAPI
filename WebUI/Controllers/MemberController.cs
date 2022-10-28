@@ -132,5 +132,10 @@ namespace WebUI.Controllers
             await SignInManager.SignOutAsync();
         }
         #endregion
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        } 
     }
 }

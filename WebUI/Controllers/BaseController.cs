@@ -8,10 +8,12 @@ namespace WebUI.Controllers
     {
         protected UserManager<AppUser> UserManager { get; }
         protected SignInManager<AppUser> SignInManager { get; }
-        public BaseController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        protected RoleManager<AppRole> RoleManager { get; } 
+        public BaseController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, RoleManager<AppRole> roleManager = null)
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            RoleManager = roleManager;
         }
         protected AppUser CurrentUser => UserManager.FindByNameAsync(User.Identity.Name).Result;
 

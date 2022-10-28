@@ -35,7 +35,7 @@ namespace WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginModel)
         {
-            if (!IsModelStateValid(ModelState))
+            if (!ModelState.IsValid)
                 return View(loginModel);
 
             AppUser user = await UserManager.FindByEmailAsync(loginModel.EmailAddress);
@@ -162,9 +162,11 @@ namespace WebUI.Controllers
         }
         #endregion
 
-        public bool IsModelStateValid(ModelStateDictionary modelState)
+        #region ContactInfo
+        public IActionResult Contact()
         {
-            return modelState.IsValid;
+            return View();
         }
+        #endregion
     }
 }
