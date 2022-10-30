@@ -18,11 +18,13 @@ namespace WebUI.Controllers
 
         public IActionResult Index()
         {
-            if (User.Identity.IsAuthenticated)
-            {
+            if (!User.Identity.IsAuthenticated)
+                return View();
+
+            if (User.IsInRole("Admin"))
+                return RedirectToAction("Index", "Admin");
+            else
                 return RedirectToAction("Index", "Member");
-            }
-            return View();
         }
 
         #region Login
@@ -71,6 +73,11 @@ namespace WebUI.Controllers
             await UserManager.ResetAccessFailedCountAsync(user);
             if (TempData["ReturnUrl"] != null)
                 return Redirect(TempData["ReturnUrl"].ToString());
+
+            if (user.UserName == "admin")
+            {
+                return RedirectToAction("Index","Admin");
+            }
 
             return RedirectToAction("Index", "Member");                 
         }

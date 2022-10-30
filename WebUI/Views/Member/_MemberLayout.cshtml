@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css2/css/morph.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/WebUI.styles.css" asp-append-version="true" />
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
@@ -14,22 +14,26 @@
 <body>
     <header> 
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-light border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Identity</a>
+            <div class="container-fluid"> 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between m-2">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Member" asp-action="Index">Info</a>
-                        </li> 
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+                                <a class="nav-link text-dark btn btn-danger" style="width:120px" asp-controller="Admin" asp-action="Index">Home Page</a>
                             </li>
+                        } 
+
+                        else
+                        {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark btn btn-danger" style="width:120px" asp-controller="Member" asp-action="Index">Home Page</a>
+                        </li>
+
                         }
                     </ul>
                 </div>
@@ -41,11 +45,18 @@
         <div class="row">
             <div class="col-md-3">
                 <h3 class="text-center">Menu</h3>
-                <a class="btn btn-info col-12" asp-action="PasswordChange" asp-controller="Member">Change Password</a>
+                <a class="btn btn-primary col-12" asp-action="PasswordChange" asp-controller="Member">Change Password</a>
 
-                <a class="btn btn-info col-12" style="margin-top: 5px" asp-action="UserEdit" asp-controller="Member">Update Information</a>
+                <a class="btn btn-primary col-12 mt-3" asp-action="UserEdit" asp-controller="Member">Update Information</a>
 
-                <a class="btn btn-info col-12" style="margin-top: 5px" asp-action="Logout" asp-controller="Member" asp-route-returnUrl="/Home/Index">Logout</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="btn btn-primary col-12 mt-3" asp-action="Index" asp-controller="Admin">Main Menu</a>
+                }
+                else
+                {
+                    <a class="btn btn-primary col-12 mt-3" asp-action="Logout" asp-controller="Member" asp-route-returnUrl="/Home/Index">Logout</a>
+                }
             </div>
             <div class="col-md-9">
                 @RenderBody()
@@ -53,7 +64,7 @@
         </div>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted" style="bottom:10px;position: fixed; width:100%;">
         <div class="container">
             &copy; Onur Derman - School Project
         </div>
