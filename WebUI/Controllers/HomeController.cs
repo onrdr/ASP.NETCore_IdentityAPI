@@ -47,7 +47,17 @@ namespace WebUI.Controllers
             }
 
             if (await UserManager.IsLockedOutAsync(user))
+            {
                 ModelState.AddModelError("", "Your account has been locked. Please try again later");
+                return View(loginModel);
+            }
+
+            // Activate this when you have a valid SmtpClient 
+            //if (await UserManager.IsEmailConfirmedAsync(user) == false)
+            //{
+            //    ModelState.AddModelError("", "Your Email is not confirmed. Please check your email for confirmation link");
+            //    return View(loginModel);
+            //}
 
             await SignInManager.SignOutAsync();
             Microsoft.AspNetCore.Identity.SignInResult result = await SignInManager.PasswordSignInAsync(user, loginModel.Password, loginModel.RememberMe, true);
@@ -97,11 +107,37 @@ namespace WebUI.Controllers
                 var result = await UserManager.CreateAsync(user, userViewModel.Password);
 
                 if (result.Succeeded)
+                {
+                    string confirmationToken = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+                    string? link = Url.Action("ConfirmEmail", "Home", new
+                    {
+                        userId = user.Id,
+                        token = confirmationToken,
+
+                    }, protocol:HttpContext.Request.Scheme);
+
+                    EmailConfirmation.SendEmailForConfirmation(link, user.Email);
+
                     return RedirectToAction(nameof(Login));
+                }
 
                 AddModelError(result);
             }
             return View(userViewModel);
+        }
+
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            var user = await UserManager.FindByIdAsync(userId);
+            var result = await UserManager.ConfirmEmailAsync(user, token);
+
+            if (result.Succeeded)
+            {
+                ViewBag.status = "Your email address has confirmed. You can login";
+                return View();
+            }
+            ViewBag.status = "An error occured. Please try again later";
+            return View(); 
         }
         #endregion
 
