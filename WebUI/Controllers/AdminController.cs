@@ -152,5 +152,12 @@ namespace WebUI.Controllers
             return RedirectToAction("Users");
         }
         #endregion
+
+        #region Claims
+        public IActionResult Claims()
+        {
+            return View(User.Claims.ToList());
+        }
+        #endregion
     }
 }

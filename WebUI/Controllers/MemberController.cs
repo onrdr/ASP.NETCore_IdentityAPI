@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using System.Security.Claims;
 
 namespace WebUI.Controllers
 {
@@ -14,7 +16,7 @@ namespace WebUI.Controllers
     {
         public MemberController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
             : base(userManager, signInManager)
-        { 
+        {
         }
 
         #region Index
@@ -106,7 +108,7 @@ namespace WebUI.Controllers
             {
                 ModelState.AddModelError("", "Old Password is wrong");
                 return View(model);
-            } 
+            }
 
             IdentityResult result = await UserManager.ChangePasswordAsync(user, model.PasswordOld, model.PasswordNew);
 
@@ -133,9 +135,65 @@ namespace WebUI.Controllers
         }
         #endregion
 
-        public IActionResult AccessDenied()
+        #region Claims
+        [Authorize(Policy = "AmsterdamPolicy")]
+        public IActionResult AmsterdamPage()
         {
             return View();
-        } 
+        }
+
+        [Authorize(Policy = "ViolencePolicy")]
+        public IActionResult ViolencePage()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> ExchangeRedirect()
+        {
+            //DeleteClaims("ExpireDateExchange");
+
+            bool result = User.HasClaim(x => x.Type == "ExpireDateExchange"); 
+
+            var date = DateTime.Now.AddDays(30).Date.ToShortDateString();
+            if (!result)
+            {
+                Claim expireDateExchange = new("ExpireDateExchange", date, ClaimValueTypes.String, "Internal");
+                await UserManager.AddClaimAsync(CurrentUser, expireDateExchange);
+                await SignInManager.SignOutAsync();
+                await SignInManager.SignInAsync(CurrentUser, true);
+            }
+            return RedirectToAction(nameof(ExchangePage));
+        }
+
+        [Authorize(Policy = "ExchangePolicy")]
+        public IActionResult ExchangePage()
+        {
+            return View();
+        }
+        #endregion
+
+        public IActionResult AccessDenied(string ReturnUrl)
+        {
+            if (ReturnUrl.Contains("Violence")) 
+                ViewBag.message = "Violence Content. You have to be over 18 to open this page !!!";
+
+            else if (ReturnUrl.Contains("Amsterdam")) 
+                ViewBag.message = "Amsterdam Members only !!!"; 
+
+            else if (ReturnUrl.Contains("Exchange"))
+                ViewBag.message = "30 days of trial has ended !!!";
+            else
+                ViewBag.message = "You dont have access to this page !!!";
+
+            return View();
+        }      
+        
+        private async void DeleteClaims(string claimName)
+        {
+            var claims = await UserManager.GetClaimsAsync(CurrentUser);
+            var lastAccessedClaim = claims.FirstOrDefault(t => t.Type == claimName);
+            await UserManager.RemoveClaimAsync(CurrentUser, lastAccessedClaim);
+        }
     }
 }
+

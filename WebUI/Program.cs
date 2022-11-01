@@ -1,5 +1,9 @@
-﻿using Business.CustomValidation;
+﻿using Business.ClaimProviders;
+using Business.ClaimProviders.Requirements;
+using Business.CustomValidation;
 using DataAccess.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +15,25 @@ builder.Services.AddControllersWithViews();
 // Database Service 
 builder.Services.AddDbContext<AppIdentityDbContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("AppDbConnection")));
+
+builder.Services.AddScoped<IClaimsTransformation, ClaimProvider>();
+builder.Services.AddTransient<IAuthorizationHandler, ExpireDateExchangeHandler>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AmsterdamPolicy", policy =>
+    {
+        policy.RequireClaim("City", "Amsterdam");
+    });
+    options.AddPolicy("ViolencePolicy", policy =>
+    {
+        policy.RequireClaim("Violence");
+    });
+    options.AddPolicy("ExchangePolicy", policy =>
+    {
+        policy.AddRequirements(new ExpireDateExchangeRequirement());
+    });
+});
 
 // Identity Service 
 builder.Services.AddIdentity<AppUser, AppRole>(options =>
@@ -44,7 +67,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
     options.ExpireTimeSpan = TimeSpan.FromDays(60);
 });
-
 
 var app = builder.Build();
 

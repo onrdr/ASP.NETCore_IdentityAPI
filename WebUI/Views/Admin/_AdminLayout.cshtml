@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css2/css/morph.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
@@ -23,7 +25,12 @@
                     <ul class="navbar-nav flex-grow-1"> 
                         <li class="nav-item">
                             <a class="nav-link text-dark btn btn-danger" style="width:120px" asp-controller="Admin" asp-action="Index">Home Page</a>
-                        </li>                     
+                        </li>    
+                        <li class="nav-item ms-auto">
+                            <a class="nav-link text-dark btn btn-success" style="width:120px" asp-controller="Member" asp-action="logout" asp-route-returnUrl="/Home/Index">
+                                <i class="fa-solid fa-right-from-bracket"></i> Logout
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -42,8 +49,6 @@
                 <a class="btn btn-warning col-12 mt-2" asp-action="Claims" asp-controller="Admin">Claims</a>
 
                 <a class="btn btn-warning col-12 mt-2" asp-action="Index" asp-controller="Member">Account Settings</a> 
-
-                <a class="btn btn-warning col-12 mt-2" asp-action="Logout" asp-controller="Member" asp-route-returnUrl="/Home/Index">Logout</a>
             </div>
             <div class="col-md-9">
                 @RenderBody()

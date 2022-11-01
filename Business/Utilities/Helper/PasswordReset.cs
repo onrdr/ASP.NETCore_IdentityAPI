@@ -6,13 +6,13 @@ namespace Business.Utilities.Helper
 {
     public static class PasswordReset
     {
-        public static void PasswordResetSendEmail(string link)
+        public static void PasswordResetSendEmail(string link, string email)
         {
             MailMessage mail = new();
             SmtpClient smtp = new ("mail.teknohub.net"); 
 
             mail.From = new MailAddress("fcakiroglu@teknohub.net"); 
-            mail.To.Add("f-cakiroglu@outlook.com");
+            mail.To.Add(email);
             mail.Subject = $"www.bıdıbıdı.com::Password Reset";
             mail.Body = "<h2>Click the link below to reset password</h2><hr />";
             mail.Body = $"<a href='{link}'>Password Reset Link</a>";

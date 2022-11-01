@@ -1,11 +1,9 @@
 ﻿using Business.Utilities.Helper;
 using DataAccess.Models;
 using DataAccess.Models.ViewModels;
-using Mapster;
-using Microsoft.AspNetCore.Authorization;
+using Mapster; 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc; 
 
 namespace WebUI.Controllers
 {
@@ -129,7 +127,7 @@ namespace WebUI.Controllers
                 token = passwordResetToken,
             }, HttpContext.Request.Scheme);
 
-            PasswordReset.PasswordResetSendEmail(passwordResetLink);
+            PasswordReset.PasswordResetSendEmail(passwordResetLink, user.Email);
             ViewBag.status = "success";
             return View(passwordResetModel);
         }
